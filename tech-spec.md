@@ -5,6 +5,43 @@ phases **in order**. Each phase has a learning goal and concrete deliverables.
 Do not skip ahead — later phases depend on the artifacts (metrics, thresholds,
 saved models) produced by earlier ones. Commit after each phase.
 
+---
+
+## Build status
+
+Progress tracker. "Code written" means the module exists and imports cleanly but has
+**not** been run on the full data, so no metrics exist for it yet.
+
+| Phase | Status | Evidence / what's missing |
+|---|---|---|
+| 0 — Setup & EDA | ✅ **done** | `results/eda.json`, `results/splits.json`, 4 EDA plots, `notebooks/01_eda.ipynb` · commit `4e9a460` |
+| 1 — Dumb baseline | ✅ **done** | `results/baseline_metrics.json` (+ `_unweighted`), probs in `models/probs/` · commit `7876344` |
+| 2 — Metric design | ✅ **done** | `src/evaluate.py`, `notebooks/02_metrics.ipynb`, `results/phase2_*.json`, `results/pr_*.png` · commit `69ef626` |
+| 3 — Strong model (DistilBERT) | ⬜ **code written, not run** | `src/transformer.py` + `notebooks/train_model.ipynb` exist and are smoke-tested; **no** `results/transformer_metrics.json`, no `models/probs/transformer_*.npy` |
+| 4.1 — Per-label thresholds | ◐ **partially done** | Run on the baseline: `results/thresholds_baseline.json`, `threshold_comparison_baseline.json` (macro-F1 0.5457 → 0.6227). **Not** run on the transformer — blocked by Phase 3 |
+| 4.2 — Policy-conditioned | ⬜ **code written, not run** | `src/policy.py`, `src/policies.py` exist (3 written policy definitions, `threat` held out); **no** `results/policy_conditioned.json` or `policy_zeroshot.json` |
+| 5 — Error analysis | ⬜ **not started** | Needs `src/error_analysis.py` + `notebooks/03_error_analysis.ipynb`; requires transformer probabilities from Phase 3 |
+| 6 — Classifier chains | ⬜ **not started** | Needs `src/chains.py`. Reliability diagram deliberately skipped (chains-only was chosen) |
+| Final — README | ◐ **in progress** | Engineering-doc README covering Phases 0–2 with verified numbers only; results table to be completed once Phases 3–6 run |
+
+### Remaining work, in dependency order
+
+1. **Phase 3 — train DistilBERT.** Run `notebooks/train_model.ipynb` (`QUICK_TEST = False`),
+   or `python -m src.transformer`. ~45 min on an M4. This unblocks everything below.
+   It also writes the Phase 4.1 transformer thresholds itself.
+2. **Phase 4.1 on the transformer** — `python -m src.thresholds --model transformer`
+   (skip if the notebook already produced `threshold_comparison_transformer.json`).
+3. **Phase 4.2 — policy-conditioned.** `python -m src.policy --variant all`, then
+   `python -m src.policy --variant heldout`. The head-to-head table needs step 2's output.
+4. **Phase 5 — error analysis.** Write `src/error_analysis.py` +
+   `notebooks/03_error_analysis.ipynb`: conflation matrix, true-vs-predicted co-occurrence,
+   and ~15 hand-inspected failures with a cause hypothesis each.
+5. **Phase 6 — classifier chains.** Write `src/chains.py`; compare against One-vs-Rest on
+   both macro-F1 and co-occurrence fidelity (the Phase 5 metric).
+6. **Final — complete the README** results table and findings from the above.
+
+---
+
 ## Goal
 
 Given a piece of text (comment/post/message), predict **all** applicable labels

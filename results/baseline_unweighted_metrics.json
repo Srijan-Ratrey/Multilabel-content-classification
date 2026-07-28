@@ -1,0 +1,112 @@
+{
+  "phase": 1,
+  "model": "tfidf+ovr-logreg (unweighted)",
+  "class_weight": null,
+  "seed": 42,
+  "threshold": 0.5,
+  "vectorizer": {
+    "max_features": 20000,
+    "ngram_range": [
+      1,
+      2
+    ],
+    "vocab_size": 20000
+  },
+  "splits": {
+    "val": {
+      "n": 23936,
+      "per_label": {
+        "toxic": {
+          "precision": 0.9223961878829136,
+          "recall": 0.590671316477768,
+          "f1": 0.7201700770661706,
+          "support": 2294,
+          "n_predicted_positive": 1469
+        },
+        "severe_toxic": {
+          "precision": 0.53125,
+          "recall": 0.2125,
+          "f1": 0.30357142857142855,
+          "support": 240,
+          "n_predicted_positive": 96
+        },
+        "obscene": {
+          "precision": 0.9301775147928995,
+          "recall": 0.6203630623520127,
+          "f1": 0.7443181818181818,
+          "support": 1267,
+          "n_predicted_positive": 845
+        },
+        "threat": {
+          "precision": 0.75,
+          "recall": 0.1267605633802817,
+          "f1": 0.21686746987951808,
+          "support": 71,
+          "n_predicted_positive": 12
+        },
+        "insult": {
+          "precision": 0.8489795918367347,
+          "recall": 0.5279187817258884,
+          "f1": 0.651017214397496,
+          "support": 1182,
+          "n_predicted_positive": 735
+        },
+        "identity_hate": {
+          "precision": 0.7391304347826086,
+          "recall": 0.16113744075829384,
+          "f1": 0.26459143968871596,
+          "support": 211,
+          "n_predicted_positive": 46
+        }
+      }
+    },
+    "test": {
+      "n": 23936,
+      "per_label": {
+        "toxic": {
+          "precision": 0.9153583617747441,
+          "recall": 0.5845684394071491,
+          "f1": 0.713487629688747,
+          "support": 2294,
+          "n_predicted_positive": 1465
+        },
+        "severe_toxic": {
+          "precision": 0.5151515151515151,
+          "recall": 0.21338912133891214,
+          "f1": 0.30177514792899407,
+          "support": 239,
+          "n_predicted_positive": 99
+        },
+        "obscene": {
+          "precision": 0.9222614840989399,
+          "recall": 0.6175078864353313,
+          "f1": 0.7397260273972602,
+          "support": 1268,
+          "n_predicted_positive": 849
+        },
+        "threat": {
+          "precision": 0.7142857142857143,
+          "recall": 0.1388888888888889,
+          "f1": 0.23255813953488372,
+          "support": 72,
+          "n_predicted_positive": 14
+        },
+        "insult": {
+          "precision": 0.8407202216066482,
+          "recall": 0.5139712108382727,
+          "f1": 0.6379400945874935,
+          "support": 1181,
+          "n_predicted_positive": 722
+        },
+        "identity_hate": {
+          "precision": 0.6808510638297872,
+          "recall": 0.15165876777251186,
+          "f1": 0.24806201550387597,
+          "support": 211,
+          "n_predicted_positive": 47
+        }
+      }
+    }
+  },
+  "rare_label_note": "At threshold 0.5, `threat` has 72 true positives in test and the model predicts positive 14 times (precision 0.714, recall 0.139, F1 0.233)."
+}

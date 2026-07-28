@@ -1,0 +1,89 @@
+{
+  "train": {
+    "n_texts": 111699,
+    "percentiles": {
+      "p50": 52.0,
+      "p75": 104.0,
+      "p90": 206.0,
+      "p95": 311.0,
+      "p99": 802.0
+    },
+    "mean": 95.02504946328973,
+    "max": 4950,
+    "truncation_cost": {
+      "128": {
+        "examples_truncated": 21579,
+        "fraction_truncated": 0.19318883785888863,
+        "tokens_lost_fraction": 0.33293917593247463
+      },
+      "256": {
+        "examples_truncated": 7742,
+        "fraction_truncated": 0.06931127404900671,
+        "tokens_lost_fraction": 0.17444277257557633
+      },
+      "512": {
+        "examples_truncated": 2472,
+        "fraction_truncated": 0.022130905379636343,
+        "tokens_lost_fraction": 0.0707494476975803
+      }
+    }
+  },
+  "val": {
+    "n_texts": 23936,
+    "percentiles": {
+      "p50": 52.0,
+      "p75": 103.0,
+      "p90": 207.0,
+      "p95": 308.0,
+      "p99": 790.9500000000044
+    },
+    "mean": 94.49653241978609,
+    "max": 2694,
+    "truncation_cost": {
+      "128": {
+        "examples_truncated": 4577,
+        "fraction_truncated": 0.1912182486631016,
+        "tokens_lost_fraction": 0.3311509198808596
+      },
+      "256": {
+        "examples_truncated": 1653,
+        "fraction_truncated": 0.0690591577540107,
+        "tokens_lost_fraction": 0.17387213848370528
+      },
+      "512": {
+        "examples_truncated": 525,
+        "fraction_truncated": 0.021933489304812835,
+        "tokens_lost_fraction": 0.0712592108561548
+      }
+    }
+  },
+  "test": {
+    "n_texts": 23936,
+    "percentiles": {
+      "p50": 51.0,
+      "p75": 104.0,
+      "p90": 209.5,
+      "p95": 308.0,
+      "p99": 796.9500000000044
+    },
+    "mean": 94.66026069518716,
+    "max": 2275,
+    "truncation_cost": {
+      "128": {
+        "examples_truncated": 4634,
+        "fraction_truncated": 0.1935995989304813,
+        "tokens_lost_fraction": 0.3317194724307835
+      },
+      "256": {
+        "examples_truncated": 1668,
+        "fraction_truncated": 0.06968582887700535,
+        "tokens_lost_fraction": 0.17037560442548022
+      },
+      "512": {
+        "examples_truncated": 526,
+        "fraction_truncated": 0.021975267379679145,
+        "tokens_lost_fraction": 0.06840754739631422
+      }
+    }
+  }
+}

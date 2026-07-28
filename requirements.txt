@@ -1,0 +1,27 @@
+# Python 3.11+ required (developed on 3.12.12).
+# Exact pins from the resolved environment — see README for setup commands.
+
+# Core numerics / data
+numpy==2.5.1
+pandas==3.0.5
+scipy==1.18.0
+
+# Classical ML: TF-IDF, One-vs-Rest logistic regression, classifier chains, metrics
+scikit-learn==1.9.0
+
+# Multi-label-aware train/val/test splitting (MultilabelStratifiedShuffleSplit)
+iterative-stratification==0.1.9
+
+# Transformer fine-tuning (DistilBERT). torch 2.13 ships the MPS backend for Apple Silicon.
+torch==2.13.0
+transformers==5.14.1
+
+# Plots (PR curves, co-occurrence heatmaps, threshold sweeps)
+matplotlib==3.11.1
+seaborn==0.13.2
+
+# Notebooks for EDA / metric analysis / error analysis
+jupyter==1.1.1
+nbconvert==7.17.1
+
+tqdm==4.70.0

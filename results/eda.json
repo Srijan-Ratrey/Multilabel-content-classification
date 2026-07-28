@@ -1,0 +1,197 @@
+{
+  "n_examples": 159571,
+  "n_labels": 6,
+  "labels": [
+    "toxic",
+    "severe_toxic",
+    "obscene",
+    "threat",
+    "insult",
+    "identity_hate"
+  ],
+  "seed": 42,
+  "per_label": {
+    "toxic": {
+      "positives": 15294,
+      "positive_rate": 0.09584448302009764,
+      "imbalance_ratio_neg_per_pos": 9.433568719759382
+    },
+    "severe_toxic": {
+      "positives": 1595,
+      "positive_rate": 0.009995550569965721,
+      "imbalance_ratio_neg_per_pos": 99.04451410658307
+    },
+    "obscene": {
+      "positives": 8449,
+      "positive_rate": 0.052948217407925,
+      "imbalance_ratio_neg_per_pos": 17.886377086045687
+    },
+    "threat": {
+      "positives": 478,
+      "positive_rate": 0.002995531769557125,
+      "imbalance_ratio_neg_per_pos": 332.8305439330544
+    },
+    "insult": {
+      "positives": 7877,
+      "positive_rate": 0.04936360616904074,
+      "imbalance_ratio_neg_per_pos": 19.25783927891329
+    },
+    "identity_hate": {
+      "positives": 1405,
+      "positive_rate": 0.00880485802558109,
+      "imbalance_ratio_neg_per_pos": 112.57366548042705
+    }
+  },
+  "rare_labels": [
+    "threat",
+    "identity_hate"
+  ],
+  "all_zeros_baseline": {
+    "subset_accuracy": 0.8983211235124177,
+    "mean_per_label_accuracy": 0.9633412921729722,
+    "per_label_accuracy": {
+      "toxic": 0.9041555169799024,
+      "severe_toxic": 0.9900044494300343,
+      "obscene": 0.947051782592075,
+      "threat": 0.9970044682304429,
+      "insult": 0.9506363938309592,
+      "identity_hate": 0.9911951419744189
+    },
+    "macro_f1": 0.0,
+    "_caveat": "A model predicting no labels at all achieves these accuracies with macro-F1 = 0.0. This is why accuracy is not the headline metric."
+  },
+  "cooccurrence_counts": {
+    "toxic": {
+      "toxic": 15294,
+      "severe_toxic": 1595,
+      "obscene": 7926,
+      "threat": 449,
+      "insult": 7344,
+      "identity_hate": 1302
+    },
+    "severe_toxic": {
+      "toxic": 1595,
+      "severe_toxic": 1595,
+      "obscene": 1517,
+      "threat": 112,
+      "insult": 1371,
+      "identity_hate": 313
+    },
+    "obscene": {
+      "toxic": 7926,
+      "severe_toxic": 1517,
+      "obscene": 8449,
+      "threat": 301,
+      "insult": 6155,
+      "identity_hate": 1032
+    },
+    "threat": {
+      "toxic": 449,
+      "severe_toxic": 112,
+      "obscene": 301,
+      "threat": 478,
+      "insult": 307,
+      "identity_hate": 98
+    },
+    "insult": {
+      "toxic": 7344,
+      "severe_toxic": 1371,
+      "obscene": 6155,
+      "threat": 307,
+      "insult": 7877,
+      "identity_hate": 1160
+    },
+    "identity_hate": {
+      "toxic": 1302,
+      "severe_toxic": 313,
+      "obscene": 1032,
+      "threat": 98,
+      "insult": 1160,
+      "identity_hate": 1405
+    }
+  },
+  "conditional_probability_row_given_col": {
+    "toxic": {
+      "toxic": 1.0,
+      "severe_toxic": 1.0,
+      "obscene": 0.938099183335306,
+      "threat": 0.9393305439330544,
+      "insult": 0.9323346451694807,
+      "identity_hate": 0.9266903914590747
+    },
+    "severe_toxic": {
+      "toxic": 0.10428926376356741,
+      "severe_toxic": 1.0,
+      "obscene": 0.17954787548822346,
+      "threat": 0.23430962343096234,
+      "insult": 0.17405103465786467,
+      "identity_hate": 0.22277580071174377
+    },
+    "obscene": {
+      "toxic": 0.5182424480188309,
+      "severe_toxic": 0.9510971786833856,
+      "obscene": 1.0,
+      "threat": 0.6297071129707112,
+      "insult": 0.7813888536244763,
+      "identity_hate": 0.7345195729537367
+    },
+    "threat": {
+      "toxic": 0.02935791813783183,
+      "severe_toxic": 0.07021943573667712,
+      "obscene": 0.035625517812758904,
+      "threat": 1.0,
+      "insult": 0.0389742287672972,
+      "identity_hate": 0.06975088967971531
+    },
+    "insult": {
+      "toxic": 0.48018830914083954,
+      "severe_toxic": 0.8595611285266458,
+      "obscene": 0.7284885785300036,
+      "threat": 0.6422594142259415,
+      "insult": 1.0,
+      "identity_hate": 0.8256227758007118
+    },
+    "identity_hate": {
+      "toxic": 0.0851314240878776,
+      "severe_toxic": 0.1962382445141066,
+      "obscene": 0.12214463250088768,
+      "threat": 0.20502092050209206,
+      "insult": 0.14726418687317508,
+      "identity_hate": 1.0
+    }
+  },
+  "labels_per_example": {
+    "0": 143346,
+    "1": 6360,
+    "2": 3480,
+    "3": 4209,
+    "4": 1760,
+    "5": 385,
+    "6": 31
+  },
+  "text_length": {
+    "chars": {
+      "p50": 204.0,
+      "p75": 432.0,
+      "p90": 884.0,
+      "p95": 1346.0,
+      "p99": 3406.2999999999884,
+      "max": 5000,
+      "mean": 390.916701656316
+    },
+    "words": {
+      "p50": 36.0,
+      "p75": 75.0,
+      "p90": 152.0,
+      "p95": 230.0,
+      "p99": 567.0,
+      "max": 1411,
+      "mean": 67.27352714465661
+    }
+  },
+  "split_sizes": {
+    "train": 111699,
+    "val": 23936,
+    "test": 23936
+  }
+}

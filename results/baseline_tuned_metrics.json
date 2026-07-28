@@ -1,0 +1,91 @@
+{
+  "name": "baseline @tuned (test)",
+  "n_samples": 23936,
+  "macro_f1": 0.6227335073293092,
+  "micro_f1": 0.7252685660906119,
+  "micro_macro_gap": 0.10253505876130264,
+  "macro_average_precision": 0.6359969997963224,
+  "micro_average_precision": 0.7774520380404247,
+  "per_label": {
+    "toxic": {
+      "threshold": 0.7,
+      "precision": 0.7703180212014135,
+      "recall": 0.7602441150828247,
+      "f1": 0.765247915752523,
+      "average_precision": 0.8516394477939223,
+      "support": 2294,
+      "n_predicted_positive": 2264,
+      "positive_rate": 0.09583890374331551
+    },
+    "severe_toxic": {
+      "threshold": 0.85,
+      "precision": 0.37639198218262804,
+      "recall": 0.7071129707112971,
+      "f1": 0.49127906976744184,
+      "average_precision": 0.42283441374046427,
+      "support": 239,
+      "n_predicted_positive": 449,
+      "positive_rate": 0.009984959893048128
+    },
+    "obscene": {
+      "threshold": 0.75,
+      "precision": 0.8009478672985783,
+      "recall": 0.7996845425867508,
+      "f1": 0.8003157063930545,
+      "average_precision": 0.8687768713508268,
+      "support": 1268,
+      "n_predicted_positive": 1266,
+      "positive_rate": 0.05297459893048128
+    },
+    "threat": {
+      "threshold": 0.9,
+      "precision": 0.47126436781609193,
+      "recall": 0.5694444444444444,
+      "f1": 0.5157232704402516,
+      "average_precision": 0.5068685974063885,
+      "support": 72,
+      "n_predicted_positive": 87,
+      "positive_rate": 0.0030080213903743314
+    },
+    "insult": {
+      "threshold": 0.85,
+      "precision": 0.7328453796889296,
+      "recall": 0.6782387806943269,
+      "f1": 0.7044854881266491,
+      "average_precision": 0.7594476861856667,
+      "support": 1181,
+      "n_predicted_positive": 1093,
+      "positive_rate": 0.0493399064171123
+    },
+    "identity_hate": {
+      "threshold": 0.85,
+      "precision": 0.40213523131672596,
+      "recall": 0.5355450236966824,
+      "f1": 0.45934959349593496,
+      "average_precision": 0.40641498230066625,
+      "support": 211,
+      "n_predicted_positive": 281,
+      "positive_rate": 0.008815173796791444
+    }
+  },
+  "hamming_loss": 0.020478219696969696,
+  "accuracy_do_not_use_as_headline": {
+    "_caveat": "Shown only to demonstrate that it is misleading here: an all-zeros model achieves the accuracy figures in 'all_zeros_baseline' below at macro-F1 = 0.0. Accuracy rewards predicting the majority class, which in this dataset is 'no label'. Use macro_f1 as the headline metric.",
+    "subset_accuracy_exact_match": 0.9089655748663101,
+    "mean_per_label_accuracy": 0.9795217803030303
+  },
+  "all_zeros_baseline": {
+    "subset_accuracy": 0.8979361631016043,
+    "mean_per_label_accuracy": 0.9633397393048129,
+    "per_label_accuracy": {
+      "toxic": 0.9041610962566845,
+      "severe_toxic": 0.9900150401069518,
+      "obscene": 0.9470254010695187,
+      "threat": 0.9969919786096256,
+      "insult": 0.9506600935828877,
+      "identity_hate": 0.9911848262032086
+    },
+    "macro_f1": 0.0,
+    "micro_f1": 0.0
+  }
+}

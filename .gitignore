@@ -1,0 +1,25 @@
+# Raw + processed data (raw is 140MB of Kaggle CSVs — regenerate by downloading)
+data/raw/
+data/processed/
+
+# Model artifacts and cached probability matrices (all regenerable)
+models/
+*.npy
+*.joblib
+*.safetensors
+*.bin
+
+# Environment
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.python-version
+
+# Notebooks
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,66 @@
+{
+  "seed": 42,
+  "fractions": {
+    "train": 0.7,
+    "val": 0.15,
+    "test": 0.15
+  },
+  "sizes": {
+    "train": 111699,
+    "val": 23936,
+    "test": 23936
+  },
+  "positives_per_label": {
+    "train": {
+      "toxic": 10706,
+      "severe_toxic": 1116,
+      "obscene": 5914,
+      "threat": 335,
+      "insult": 5514,
+      "identity_hate": 983
+    },
+    "val": {
+      "toxic": 2294,
+      "severe_toxic": 240,
+      "obscene": 1267,
+      "threat": 71,
+      "insult": 1182,
+      "identity_hate": 211
+    },
+    "test": {
+      "toxic": 2294,
+      "severe_toxic": 239,
+      "obscene": 1268,
+      "threat": 72,
+      "insult": 1181,
+      "identity_hate": 211
+    }
+  },
+  "positive_rate_per_label": {
+    "train": {
+      "toxic": 0.09585,
+      "severe_toxic": 0.00999,
+      "obscene": 0.05295,
+      "threat": 0.003,
+      "insult": 0.04936,
+      "identity_hate": 0.0088
+    },
+    "val": {
+      "toxic": 0.09584,
+      "severe_toxic": 0.01003,
+      "obscene": 0.05293,
+      "threat": 0.00297,
+      "insult": 0.04938,
+      "identity_hate": 0.00882
+    },
+    "test": {
+      "toxic": 0.09584,
+      "severe_toxic": 0.00998,
+      "obscene": 0.05297,
+      "threat": 0.00301,
+      "insult": 0.04934,
+      "identity_hate": 0.00882
+    }
+  },
+  "note": "threat has ~72 positives in each of val and test. Per-label threshold calibration on that few positives is noisy; quantified in Phase 4."
+}

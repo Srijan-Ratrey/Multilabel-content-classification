@@ -1,5 +1,6 @@
 {
   "seed": 42,
+  "strategy": "combination",
   "fractions": {
     "train": 0.7,
     "val": 0.15,
@@ -12,55 +13,56 @@
   },
   "positives_per_label": {
     "train": {
-      "toxic": 10706,
-      "severe_toxic": 1116,
-      "obscene": 5914,
+      "toxic": 10705,
+      "severe_toxic": 1118,
+      "obscene": 5916,
       "threat": 335,
       "insult": 5514,
-      "identity_hate": 983
+      "identity_hate": 982
     },
     "val": {
       "toxic": 2294,
-      "severe_toxic": 240,
-      "obscene": 1267,
-      "threat": 71,
+      "severe_toxic": 236,
+      "obscene": 1265,
+      "threat": 72,
       "insult": 1182,
-      "identity_hate": 211
+      "identity_hate": 210
     },
     "test": {
-      "toxic": 2294,
-      "severe_toxic": 239,
+      "toxic": 2295,
+      "severe_toxic": 241,
       "obscene": 1268,
-      "threat": 72,
+      "threat": 71,
       "insult": 1181,
-      "identity_hate": 211
+      "identity_hate": 213
     }
   },
   "positive_rate_per_label": {
     "train": {
-      "toxic": 0.09585,
-      "severe_toxic": 0.00999,
-      "obscene": 0.05295,
+      "toxic": 0.09584,
+      "severe_toxic": 0.01001,
+      "obscene": 0.05296,
       "threat": 0.003,
       "insult": 0.04936,
-      "identity_hate": 0.0088
+      "identity_hate": 0.00879
     },
     "val": {
       "toxic": 0.09584,
-      "severe_toxic": 0.01003,
-      "obscene": 0.05293,
-      "threat": 0.00297,
+      "severe_toxic": 0.00986,
+      "obscene": 0.05285,
+      "threat": 0.00301,
       "insult": 0.04938,
-      "identity_hate": 0.00882
+      "identity_hate": 0.00877
     },
     "test": {
-      "toxic": 0.09584,
-      "severe_toxic": 0.00998,
+      "toxic": 0.09588,
+      "severe_toxic": 0.01007,
       "obscene": 0.05297,
-      "threat": 0.00301,
+      "threat": 0.00297,
       "insult": 0.04934,
-      "identity_hate": 0.00882
+      "identity_hate": 0.0089
     }
   },
-  "note": "threat has ~72 positives in each of val and test. Per-label threshold calibration on that few positives is noisy; quantified in Phase 4."
+  "note": "threat has ~72 positives in each of val and test. Per-label threshold calibration on that few positives is noisy; quantified in Phase 4.",
+  "reproducibility": "strategy='combination' depends only on scikit-learn, so notebooks/train_model.ipynb reproduces this split exactly on Kaggle without iterative-stratification. The DistilBERT probabilities in models/probs/ were produced against it."
 }

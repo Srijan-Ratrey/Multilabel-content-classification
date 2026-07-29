@@ -1,0 +1,98 @@
+{
+  "model": "baseline_unweighted",
+  "headline": {
+    "macro_f1_at_0.5": 0.46923665689866056,
+    "macro_f1_tuned": 0.5963652601488522,
+    "macro_f1_gain": 0.1271286032501916,
+    "relative_gain_percent": 27.09264107591814
+  },
+  "micro_f1_at_0.5": 0.6715500945179584,
+  "micro_f1_tuned": 0.7249096061760969,
+  "per_label": {
+    "toxic": {
+      "threshold": 0.3,
+      "test_f1_at_0.5": 0.7272727272727273,
+      "test_f1_tuned": 0.7713485767615492,
+      "test_f1_gain": 0.04407584948882193,
+      "val_f1_tuned": 0.7684113015284854,
+      "val_to_test_gap": 0.002937275233063863,
+      "val_positives": 2294,
+      "test_positives": 2295,
+      "recall_at_0.5": 0.5978213507625272,
+      "recall_tuned": 0.7202614379084967,
+      "precision_at_0.5": 0.9282814614343707,
+      "precision_tuned": 0.8302360622802611
+    },
+    "severe_toxic": {
+      "threshold": 0.15,
+      "test_f1_at_0.5": 0.35777126099706746,
+      "test_f1_tuned": 0.4690909090909091,
+      "test_f1_gain": 0.11131964809384165,
+      "val_f1_tuned": 0.5027932960893855,
+      "val_to_test_gap": -0.033702386998476386,
+      "val_positives": 236,
+      "test_positives": 241,
+      "recall_at_0.5": 0.25311203319502074,
+      "recall_tuned": 0.5352697095435685,
+      "precision_at_0.5": 0.61,
+      "precision_tuned": 0.4174757281553398
+    },
+    "obscene": {
+      "threshold": 0.25,
+      "test_f1_at_0.5": 0.7314990512333965,
+      "test_f1_tuned": 0.785506039150354,
+      "test_f1_gain": 0.05400698791695746,
+      "val_f1_tuned": 0.7944746755964839,
+      "val_to_test_gap": -0.008968636446129885,
+      "val_positives": 1265,
+      "test_positives": 1268,
+      "recall_at_0.5": 0.6080441640378549,
+      "recall_tuned": 0.7436908517350158,
+      "precision_at_0.5": 0.9178571428571428,
+      "precision_tuned": 0.8323036187113857
+    },
+    "threat": {
+      "threshold": 0.1,
+      "test_f1_at_0.5": 0.125,
+      "test_f1_tuned": 0.4032258064516129,
+      "test_f1_gain": 0.2782258064516129,
+      "val_f1_tuned": 0.48484848484848486,
+      "val_to_test_gap": -0.08162267839687198,
+      "val_positives": 72,
+      "test_positives": 71,
+      "recall_at_0.5": 0.07042253521126761,
+      "recall_tuned": 0.352112676056338,
+      "precision_at_0.5": 0.5555555555555556,
+      "precision_tuned": 0.4716981132075472
+    },
+    "insult": {
+      "threshold": 0.2,
+      "test_f1_at_0.5": 0.6316894018887723,
+      "test_f1_tuned": 0.7051177904142973,
+      "test_f1_gain": 0.07342838852552502,
+      "val_f1_tuned": 0.7090032154340836,
+      "val_to_test_gap": -0.0038854250197862816,
+      "val_positives": 1182,
+      "test_positives": 1181,
+      "recall_at_0.5": 0.5097375105842507,
+      "recall_tuned": 0.7349703640982218,
+      "precision_at_0.5": 0.8303448275862069,
+      "precision_tuned": 0.6775956284153005
+    },
+    "identity_hate": {
+      "threshold": 0.15,
+      "test_f1_at_0.5": 0.2421875,
+      "test_f1_tuned": 0.44390243902439025,
+      "test_f1_gain": 0.20171493902439025,
+      "val_f1_tuned": 0.4461538461538462,
+      "val_to_test_gap": -0.002251407129455929,
+      "val_positives": 210,
+      "test_positives": 213,
+      "recall_at_0.5": 0.14553990610328638,
+      "recall_tuned": 0.4272300469483568,
+      "precision_at_0.5": 0.7209302325581395,
+      "precision_tuned": 0.4619289340101523
+    }
+  },
+  "small_sample_caveat": "`threat` shows the largest validation-to-test F1 drop (-0.0816) with only 72 validation positives to tune against. Per-label thresholds for rare labels are estimated from very few positives, so their tuned F1 on validation is an optimistic estimate. This is a real limitation of the method, not a bug \u2014 reported rather than hidden."
+}

@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 from pathlib import Path
 
 import numpy as np
@@ -32,8 +33,17 @@ log = logging.getLogger(__name__)
 DEFAULT_MAX_LENGTH = 256
 
 
-def find_model_dir(explicit: Path | None = None) -> Path:
-    """Locate a saved model directory, tolerating Kaggle layouts and bare checkpoints."""
+def find_model_dir(explicit: Path | None = None) -> Path | str:
+    """Locate the model: a Hub repo id if MODEL_ID is set, else a local directory.
+
+    The MODEL_ID branch is what the deployed Space uses — the 256MB weights are gitignored,
+    so they live in a Hugging Face model repo and `from_pretrained` resolves the id directly.
+    Local search remains the fallback so `python -m src.predict` still works offline.
+    """
+    if explicit is None and (model_id := os.environ.get("MODEL_ID", "").strip()):
+        log.info("MODEL_ID set -- loading from the Hugging Face Hub: %s", model_id)
+        return model_id
+
     candidates = [explicit] if explicit else [
         MODELS / "distilbert-multilabel",
         Path("/kaggle/working/models/distilbert-multilabel"),

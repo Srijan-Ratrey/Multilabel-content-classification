@@ -1,0 +1,27 @@
+# Serving dependencies only — a deliberate subset of requirements.txt, for the Docker image.
+#
+# TARGETS LINUX containers (Hugging Face Spaces / any x86_64 or aarch64 host). The `+cpu`
+# torch pin below does not exist for macOS, so do NOT install this file locally — use
+# requirements.txt for local development.
+#
+# Excluded because the serving path genuinely does not import them (verified against the
+# import graph of serve.py -> app.py -> src.predict -> src.config): jupyter, nbconvert,
+# seaborn, matplotlib, iterative-stratification, scipy, scikit-learn, AND pandas. Only
+# src.data uses pandas, and nothing in the serving path imports src.data.
+
+# CPU-only torch. The default PyPI `torch` wheel for Linux bundles CUDA (~2.5GB); the CPU
+# build is published on this index as `2.13.0+cpu`. The explicit `+cpu` local version is
+# required: with --extra-index-url alone, pip sees both `2.13.0` (PyPI, CUDA) and
+# `2.13.0+cpu` and may resolve to either. Verified this wheel exists for
+# cp312 manylinux_2_28 x86_64 and aarch64.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.13.0+cpu
+
+transformers==5.14.1
+numpy==2.5.1
+
+# API + UI
+fastapi==0.140.13
+uvicorn==0.52.0
+pydantic==2.13.4
+gradio==6.20.0

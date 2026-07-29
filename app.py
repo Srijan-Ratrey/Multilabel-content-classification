@@ -235,6 +235,37 @@ def build_app(model, tokenizer, device: str, tuned: dict[str, float], calibrated
     return demo
 
 
+def load_runtime(model_dir: str | None = None) -> dict:
+    """Load model, tokenizer, device and thresholds once.
+
+    Shared by `python app.py` and by serve.py, so the deployed API and the UI can never end up
+    loading different weights or different thresholds.
+    """
+    from pathlib import Path
+
+    from transformers import AutoModelForSequenceClassification, AutoTokenizer
+
+    source = find_model_dir(Path(model_dir) if model_dir else None)
+    device = get_device()
+    log.info("loading %s on %s", source, device)
+
+    tokenizer = AutoTokenizer.from_pretrained(str(source))
+    model = AutoModelForSequenceClassification.from_pretrained(str(source)).to(device)
+    model.eval()
+
+    tuned, calibrated = load_thresholds()
+    log.info("thresholds: %s", {k: round(v, 2) for k, v in tuned.items()})
+
+    return {
+        "model": model,
+        "tokenizer": tokenizer,
+        "device": device,
+        "thresholds": tuned,
+        "calibrated": calibrated,
+        "source": str(source),
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Gradio UI for the policy classifier.")
     parser.add_argument("--model-dir", default=None)
@@ -245,21 +276,8 @@ def main() -> None:
     setup_logging()
     set_seed()
 
-    from pathlib import Path
-
-    from transformers import AutoModelForSequenceClassification, AutoTokenizer
-
-    model_dir = find_model_dir(Path(args.model_dir) if args.model_dir else None)
-    device = get_device()
-    log.info("loading %s on %s", model_dir, device)
-    tokenizer = AutoTokenizer.from_pretrained(str(model_dir))
-    model = AutoModelForSequenceClassification.from_pretrained(str(model_dir)).to(device)
-    model.eval()
-
-    tuned, calibrated = load_thresholds()
-    log.info("thresholds: %s", {k: round(v, 2) for k, v in tuned.items()})
-
-    demo = build_app(model, tokenizer, device, tuned, calibrated)
+    rt = load_runtime(args.model_dir)
+    demo = build_app(rt["model"], rt["tokenizer"], rt["device"], rt["thresholds"], rt["calibrated"])
     demo.launch(css=CSS, theme=gr.themes.Soft(), server_port=args.port, share=args.share)
 
 

@@ -84,45 +84,87 @@ def build_label_matrix(df: pd.DataFrame) -> np.ndarray:
     return Y
 
 
-def make_splits(Y: np.ndarray, seed: int = SEED) -> dict[str, np.ndarray]:
-    """70/15/15 multi-label-stratified split, computed once and persisted.
-
-    Uses MultilabelStratifiedShuffleSplit, which balances every label's positive
-    rate across splits jointly rather than one label at a time. That matters for
-    `threat` (0.30% prevalence): a plain random split can leave the splits with
-    materially different numbers of its ~478 positives.
-    """
+def _split_iterstrat(Y: np.ndarray, seed: int) -> dict[str, np.ndarray]:
+    """Split with MultilabelStratifiedShuffleSplit (requires iterative-stratification)."""
     from iterstrat.ml_stratifiers import MultilabelStratifiedShuffleSplit
 
-    n = len(Y)
-    X_dummy = np.zeros((n, 1), dtype=np.int8)
+    X_dummy = np.zeros((len(Y), 1), dtype=np.int8)
     holdout_size = VAL_FRACTION + TEST_FRACTION
 
     first = MultilabelStratifiedShuffleSplit(n_splits=1, test_size=holdout_size, random_state=seed)
     train_idx, holdout_idx = next(first.split(X_dummy, Y))
 
-    # Halve the holdout into val and test.
     second = MultilabelStratifiedShuffleSplit(
         n_splits=1, test_size=TEST_FRACTION / holdout_size, random_state=seed
     )
     rel_val, rel_test = next(second.split(X_dummy[holdout_idx], Y[holdout_idx]))
-    val_idx, test_idx = holdout_idx[rel_val], holdout_idx[rel_test]
-
-    splits = {
+    return {
         "train": np.sort(train_idx),
-        "val": np.sort(val_idx),
-        "test": np.sort(test_idx),
+        "val": np.sort(holdout_idx[rel_val]),
+        "test": np.sort(holdout_idx[rel_test]),
     }
 
-    # No row may appear in two splits.
+
+def _split_combination(Y: np.ndarray, seed: int) -> dict[str, np.ndarray]:
+    """Split stratified on each row's exact label COMBINATION. **This is the default.**
+
+    With 6 binary labels there are at most 64 distinct combinations, so stratifying on the
+    combination is a *finer* partition than per-label stratification and preserves every
+    label's positive rate by construction. Combinations too rare to divide three ways
+    (fewer than 6 rows) are pooled into one bucket and split randomly.
+
+    Why this is the default rather than iterative-stratification: it depends only on
+    scikit-learn, so it produces byte-identical splits in environments where
+    `iterative-stratification` is unavailable — notably Kaggle with internet off. The
+    DistilBERT probabilities in `models/probs/` were produced against this split, so making
+    it canonical is what lets the baseline and the transformer be compared like for like.
+    """
+    from sklearn.model_selection import train_test_split
+
+    combo = (Y.astype(np.int64) * (2 ** np.arange(Y.shape[1]))).sum(axis=1)
+    counts = pd.Series(combo).value_counts()
+    rare = set(counts[counts < 6].index)
+    if rare:
+        combo = np.where(np.isin(combo, list(rare)), -1, combo)
+
+    idx = np.arange(len(Y))
+    holdout_size = VAL_FRACTION + TEST_FRACTION
+    train_idx, holdout_idx = train_test_split(
+        idx, test_size=holdout_size, random_state=seed, stratify=combo
+    )
+    val_idx, test_idx = train_test_split(
+        holdout_idx,
+        test_size=TEST_FRACTION / holdout_size,
+        random_state=seed,
+        stratify=combo[holdout_idx],
+    )
+    return {"train": np.sort(train_idx), "val": np.sort(val_idx), "test": np.sort(test_idx)}
+
+
+def make_splits(Y: np.ndarray, seed: int = SEED, strategy: str = "combination") -> dict[str, np.ndarray]:
+    """70/15/15 multi-label-stratified split, computed once and persisted.
+
+    ``strategy="combination"`` (default) stratifies on the exact label combination and needs
+    only scikit-learn; ``strategy="iterstrat"`` uses MultilabelStratifiedShuffleSplit. Both
+    keep every label's positive rate stable across splits, which matters for `threat`
+    (0.30% prevalence) where a plain random split would scatter its ~478 positives unevenly.
+
+    The default is "combination" so that this module, `notebooks/train_model.ipynb`, and a
+    Kaggle run all produce the *same* split — see `_split_combination` for why that matters.
+    """
+    splits = (_split_combination if strategy == "combination" else _split_iterstrat)(Y, seed)
+
+    # No row may appear in two splits, and none may be lost.
     all_idx = np.concatenate(list(splits.values()))
-    assert len(np.unique(all_idx)) == len(all_idx) == n, "splits overlap or lose rows"
+    assert len(np.unique(all_idx)) == len(all_idx) == len(Y), "splits overlap or lose rows"
 
     np.savez_compressed(SPLITS_NPZ, **splits)
-    log.info("saved splits to %s", SPLITS_NPZ)
+    log.info("saved splits (strategy=%s) to %s", strategy, SPLITS_NPZ)
 
+    holdout_size = VAL_FRACTION + TEST_FRACTION
     summary = {
         "seed": seed,
+        "strategy": strategy,
         "fractions": {"train": 1 - holdout_size, "val": VAL_FRACTION, "test": TEST_FRACTION},
         "sizes": {k: int(len(v)) for k, v in splits.items()},
         "positives_per_label": {
@@ -134,6 +176,11 @@ def make_splits(Y: np.ndarray, seed: int = SEED) -> dict[str, np.ndarray]:
         "note": (
             "threat has ~72 positives in each of val and test. Per-label threshold "
             "calibration on that few positives is noisy; quantified in Phase 4."
+        ),
+        "reproducibility": (
+            "strategy='combination' depends only on scikit-learn, so notebooks/train_model.ipynb "
+            "reproduces this split exactly on Kaggle without iterative-stratification. The "
+            "DistilBERT probabilities in models/probs/ were produced against it."
         ),
     }
     (RESULTS / "splits.json").write_text(json.dumps(summary, indent=2))
@@ -210,6 +257,12 @@ def load_kaggle_test() -> tuple[list[str], np.ndarray]:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Build label matrix and persist splits.")
     parser.add_argument("--seed", type=int, default=SEED)
+    parser.add_argument(
+        "--strategy",
+        choices=["combination", "iterstrat"],
+        default="combination",
+        help="combination (default) matches notebooks/train_model.ipynb and Kaggle exactly",
+    )
     args = parser.parse_args()
 
     setup_logging()
@@ -217,7 +270,7 @@ def main() -> None:
 
     df = load_raw()
     Y = build_label_matrix(df)
-    splits = make_splits(Y, seed=args.seed)
+    splits = make_splits(Y, seed=args.seed, strategy=args.strategy)
 
     for name, idx in splits.items():
         rates = dict(zip(LABELS, (100 * Y[idx].mean(0)).round(2).tolist()))

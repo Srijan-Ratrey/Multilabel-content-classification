@@ -2,7 +2,7 @@
 # Space root). Linux-only: the `+cpu` torch pin has no macOS wheel — use the repo's
 # requirements.txt for local development.
 #
-# Only what app.py's import graph needs (serve.py -> app.py -> src.predict -> src.config).
+# Only what app.py's import graph needs (app.py -> src.predict -> src.config).
 # Deliberately absent: pandas, scikit-learn, scipy, matplotlib, seaborn, jupyter, nbconvert,
 # iterative-stratification. Verified by installing exactly this set into a clean venv.
 # gradio already brings fastapi/uvicorn, so those are not listed.

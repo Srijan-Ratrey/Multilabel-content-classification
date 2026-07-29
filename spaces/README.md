@@ -60,10 +60,6 @@ curl -N https://<space-host>/gradio_api/call/predict/$EID
 `thresholds` is `"tuned"` (calibrated per label) or `"default"` (0.5 everywhere).
 Limits: 32 texts per request, 5,000 characters each. Request text is not logged or stored.
 
-If you need a single-request `POST /predict` returning JSON directly, the repo also ships
-`serve.py` (FastAPI with this UI mounted) and a `Dockerfile` — that path needs a Docker Space,
-which is a paid tier, or any container host.
-
 ## Limitations — read before using this for anything
 
 - Trained on 2018 English Wikipedia talk-page comments. Other domains, platforms, and eras will

@@ -32,7 +32,7 @@ log = logging.getLogger(__name__)
 MAX_LENGTH = 256
 # Bounds for the programmatic API (the UI is one text at a time). A public toxicity endpoint
 # attracts abuse and scraping; 5,000 chars is the longest comment in the Jigsaw training data,
-# so the cap is not a practical limitation. serve.py enforces the same numbers.
+# so the cap is not a practical limitation.
 MAX_TEXTS_PER_REQUEST = 32
 MAX_CHARS_PER_TEXT = 5_000
 
@@ -240,10 +240,10 @@ def build_app(model, tokenizer, device: str, tuned: dict[str, float], calibrated
 
         # --- programmatic API -------------------------------------------------
         # gr.api exposes these as documented endpoints without any UI component, which is how
-        # a free Gradio Space gets an API at all (mounting FastAPI needs the paid Docker SDK).
-        # Contract: POST /gradio_api/call/<api_name> returns {"event_id": ...}, then
-        # GET /gradio_api/call/<api_name>/<event_id> streams the result. The gradio_client
-        # library hides that two-step; serve.py offers a plain REST POST for self-hosting.
+        # a free Gradio Space gets an API at all (mounting a FastAPI app would need the paid
+        # Docker SDK). Contract: POST /gradio_api/call/<api_name> returns {"event_id": ...},
+        # then GET /gradio_api/call/<api_name>/<event_id> streams the result. The
+        # gradio_client library hides that two-step from Python callers.
         def predict_api(texts: list[str], thresholds: str = "tuned") -> list[dict]:
             """Classify comments. thresholds: 'tuned' (calibrated) or 'default' (0.5)."""
             if not isinstance(texts, list):
@@ -312,8 +312,8 @@ def build_app(model, tokenizer, device: str, tuned: dict[str, float], calibrated
 def load_runtime(model_dir: str | None = None) -> dict:
     """Load model, tokenizer, device and thresholds once.
 
-    Shared by `python app.py` and by serve.py, so the deployed API and the UI can never end up
-    loading different weights or different thresholds.
+    The UI and the gr.api endpoints share this single load, so they can never end up serving
+    different weights or different thresholds.
     """
     from pathlib import Path
 

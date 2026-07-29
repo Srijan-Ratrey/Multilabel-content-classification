@@ -10,8 +10,9 @@ A Space is its own git repo with a specific layout: `README.md` at the root carr
 front matter that configures it, and `requirements.txt` at the root drives the build. This
 script stages the right files under those names so the layout cannot be got wrong by hand.
 
-Gradio SDK rather than Docker: Docker Spaces are a paid tier. The trade-off is that the API
-becomes Gradio's two-step call protocol instead of a single REST POST — see spaces/README.md.
+Gradio SDK, because Docker Spaces are a paid tier. The consequence is that the API is Gradio's
+two-step call protocol rather than a single REST POST — see spaces/README.md.
+
 The model weights are NOT uploaded here; the Space pulls them from the model repo at startup
 via the MODEL_ID variable, which this script sets for you.
 """

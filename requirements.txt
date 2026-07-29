@@ -27,4 +27,8 @@ seaborn==0.13.2
 jupyter==1.1.1
 nbconvert==7.17.1
 
+# Interactive demo UI (app.py). Note: Gradio 6 moved `css`/`theme` from the Blocks
+# constructor to launch(); app.py passes them at launch for that reason.
+gradio==6.20.0
+
 tqdm==4.70.0

@@ -43,7 +43,7 @@ Easiest from Python:
 ```python
 from gradio_client import Client
 
-client = Client("Srijan-Ratrey/multilabel-content-classification")
+client = Client("srijanratrey/multilabel-content-classification")
 print(client.predict(texts=["you are an idiot"], thresholds="tuned", api_name="/predict"))
 ```
 

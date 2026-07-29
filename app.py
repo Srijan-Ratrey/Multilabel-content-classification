@@ -18,17 +18,23 @@ from __future__ import annotations
 
 import argparse
 import html as html_lib
+import json
 import logging
 
 import gradio as gr
 import numpy as np
 
-from src.config import LABELS, get_device, set_seed, setup_logging
+from src.config import LABELS, RESULTS, get_device, set_seed, setup_logging
 from src.predict import find_model_dir, load_thresholds, predict_probs
 
 log = logging.getLogger(__name__)
 
 MAX_LENGTH = 256
+# Bounds for the programmatic API (the UI is one text at a time). A public toxicity endpoint
+# attracts abuse and scraping; 5,000 chars is the longest comment in the Jigsaw training data,
+# so the cap is not a practical limitation. serve.py enforces the same numbers.
+MAX_TEXTS_PER_REQUEST = 32
+MAX_CHARS_PER_TEXT = 5_000
 
 # Colours are taken from the data-viz reference palette rather than invented, since a
 # JS runtime was unavailable to run its validator. `critical` is a fixed status step
@@ -231,6 +237,74 @@ def build_app(model, tokenizer, device: str, tuned: dict[str, float], calibrated
             trigger(classify, [text, mode, uniform], [chart, table, note])
         mode.change(classify, [text, mode, uniform], [chart, table, note])
         uniform.change(classify, [text, mode, uniform], [chart, table, note])
+
+        # --- programmatic API -------------------------------------------------
+        # gr.api exposes these as documented endpoints without any UI component, which is how
+        # a free Gradio Space gets an API at all (mounting FastAPI needs the paid Docker SDK).
+        # Contract: POST /gradio_api/call/<api_name> returns {"event_id": ...}, then
+        # GET /gradio_api/call/<api_name>/<event_id> streams the result. The gradio_client
+        # library hides that two-step; serve.py offers a plain REST POST for self-hosting.
+        def predict_api(texts: list[str], thresholds: str = "tuned") -> list[dict]:
+            """Classify comments. thresholds: 'tuned' (calibrated) or 'default' (0.5)."""
+            if not isinstance(texts, list):
+                raise gr.Error("`texts` must be a list of strings")
+            if not 1 <= len(texts) <= MAX_TEXTS_PER_REQUEST:
+                raise gr.Error(f"send between 1 and {MAX_TEXTS_PER_REQUEST} texts")
+            for t in texts:
+                if not isinstance(t, str):
+                    raise gr.Error("every item in `texts` must be a string")
+                if len(t) > MAX_CHARS_PER_TEXT:
+                    raise gr.Error(f"each text must be under {MAX_CHARS_PER_TEXT} characters")
+            if thresholds not in ("tuned", "default"):
+                raise gr.Error("`thresholds` must be 'tuned' or 'default'")
+
+            active = tuned if thresholds == "tuned" else {l: 0.5 for l in LABELS}
+            probs = predict_probs(texts, model, tokenizer, device, MAX_LENGTH)
+            return [
+                {
+                    "labels": [l for i, l in enumerate(LABELS) if row[i] >= active[l]],
+                    "probabilities": {l: round(float(row[i]), 6) for i, l in enumerate(LABELS)},
+                    "thresholds_applied": {l: float(active[l]) for l in LABELS},
+                }
+                for row in np.atleast_2d(probs)
+            ]
+
+        def info_api() -> dict:
+            """Model card: labels, calibrated thresholds, metrics, and caveats."""
+            payload = {
+                "labels": LABELS,
+                "thresholds": {l: float(tuned[l]) for l in LABELS},
+                "calibrated": calibrated,
+                "limits": {
+                    "max_texts_per_request": MAX_TEXTS_PER_REQUEST,
+                    "max_chars_per_text": MAX_CHARS_PER_TEXT,
+                    "max_tokens": MAX_LENGTH,
+                },
+                "caveats": [
+                    "Trained on 2018 English Wikipedia talk-page comments; other domains degrade.",
+                    "Rare labels are weak: F1 ~0.54 on threat and severe_toxic.",
+                    "identity_hate recall is 0.535 -- it misses about half of them.",
+                    "A demo, not a moderation system.",
+                ],
+            }
+            metrics_file = RESULTS / "transformer_tuned_metrics.json"
+            if metrics_file.exists():
+                m = json.loads(metrics_file.read_text())
+                payload["metrics"] = {
+                    "split": "held-out test",
+                    "n_samples": m["n_samples"],
+                    "macro_f1_headline": m["macro_f1"],
+                    "micro_f1": m["micro_f1"],
+                    "macro_average_precision": m["macro_average_precision"],
+                    "per_label": m["per_label"],
+                    "all_zeros_control": m["all_zeros_baseline"],
+                }
+            return payload
+
+        gr.api(predict_api, api_name="predict",
+               api_description="Classify comments and return probabilities plus thresholded labels.")
+        gr.api(info_api, api_name="info",
+               api_description="Model card: thresholds, metrics, and limitations.")
 
     return demo
 

@@ -77,7 +77,10 @@ def load_thresholds(path: Path | None = None) -> tuple[dict[str, float], bool]:
         payload = json.loads(path.read_text())
         thresholds = payload.get("thresholds", payload)
         if all(label in thresholds for label in LABELS):
-            return {label: float(thresholds[label]) for label in LABELS}, True
+            # Round to 4dp: the search grid is np.linspace(0.05, 0.95, 19), whose values carry
+            # float noise (0.55 arrives as 0.5499999999999999). Rounding is exact for a 0.05
+            # grid and keeps the API's JSON readable.
+            return {label: round(float(thresholds[label]), 4) for label in LABELS}, True
     log.warning("%s not found -- falling back to 0.5 for every label", path)
     return {label: 0.5 for label in LABELS}, False
 

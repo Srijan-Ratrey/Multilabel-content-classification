@@ -3,8 +3,9 @@ title: Multi-Label Content Policy Classifier
 emoji: 🛡️
 colorFrom: red
 colorTo: gray
-sdk: docker
-app_port: 7860
+sdk: gradio
+sdk_version: 6.20.0
+app_file: app.py
 pinned: false
 license: mit
 ---
@@ -35,16 +36,33 @@ exact-match accuracy** on this data, at macro-F1 of exactly **0.0**.
 
 ## API
 
-`POST /predict` — see `/docs` for the OpenAPI schema.
+Two endpoints, `predict` and `info`, documented under **Use via API** at the bottom of the page.
 
-```bash
-curl -X POST https://<space-host>/predict \
-  -H 'Content-Type: application/json' \
-  -d '{"texts": ["you are an idiot"], "thresholds": "tuned"}'
+Easiest from Python:
+
+```python
+from gradio_client import Client
+
+client = Client("Srijan-Ratrey/multilabel-content-classification")
+print(client.predict(texts=["you are an idiot"], thresholds="tuned", api_name="/predict"))
 ```
 
-Also `GET /health` and `GET /info` (full metrics, per-label thresholds, and caveats).
+Over plain HTTP it is a two-step call (Gradio's protocol): `POST /gradio_api/call/predict`
+returns an `event_id`, then `GET /gradio_api/call/predict/{event_id}` streams the result.
+
+```bash
+EID=$(curl -s -X POST https://<space-host>/gradio_api/call/predict \
+  -H 'Content-Type: application/json' \
+  -d '{"data": [["you are an idiot"], "tuned"]}' | sed -n 's/.*"event_id":"\([^"]*\)".*/\1/p')
+curl -N https://<space-host>/gradio_api/call/predict/$EID
+```
+
+`thresholds` is `"tuned"` (calibrated per label) or `"default"` (0.5 everywhere).
 Limits: 32 texts per request, 5,000 characters each. Request text is not logged or stored.
+
+If you need a single-request `POST /predict` returning JSON directly, the repo also ships
+`serve.py` (FastAPI with this UI mounted) and a `Dockerfile` — that path needs a Docker Space,
+which is a paid tier, or any container host.
 
 ## Limitations — read before using this for anything
 

@@ -157,7 +157,7 @@ def main() -> None:
     api.upload_file(path_or_fileobj=card.encode(), path_in_repo="README.md", repo_id=args.repo)
 
     log.info("done: https://huggingface.co/%s", args.repo)
-    log.info("next: create a Docker Space and set the Space variable MODEL_ID=%s", args.repo)
+    log.info("next: the demo loads this repo by id -- see MODEL_ID in deploy/streamlit_app.py")
 
 
 if __name__ == "__main__":

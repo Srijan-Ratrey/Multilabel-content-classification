@@ -10,7 +10,7 @@ this data, at a macro-F1 of exactly **0.0**. So the work isn't squeezing the mod
 choosing the right metric, calibrating a threshold per label, and doing real error analysis.
 
 - **Model:** https://huggingface.co/srijanratrey/distilbert-jigsaw-multilabel
-- **Live demo:** _(Streamlit Community Cloud — URL to be added)_
+- **Live demo:** [live_demo](https://multilabel-content-classification.streamlit.app/)
 - **Build brief:** [tech-spec.md](tech-spec.md)
 
 ---
